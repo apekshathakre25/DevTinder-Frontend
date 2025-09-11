@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Lock from "../assets/images/Lock";
-import Mail from "../assets/images/mail";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
@@ -85,7 +83,7 @@ const Login = () => {
         )}
 
         <div className="flex items-center w-full mt-4 bg-white dark:bg-zinc-800 border border-zinc-300/80 dark:border-zinc-700 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <Mail />
+      
           <input
             type="email"
             placeholder="Email id"
@@ -97,7 +95,7 @@ const Login = () => {
         </div>
 
         <div className="flex items-center mt-4 w-full bg-white dark:bg-zinc-800 border border-zinc-300/80 dark:border-zinc-700 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <Lock />
+         
           <input
             type="password"
             placeholder="Password"
