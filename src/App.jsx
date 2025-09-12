@@ -13,6 +13,7 @@ import PendingConnection from "./components/PendingConnection";
 const App = () => {
   return (
     <>
+    
       <Navbar />
       <ToastContainer position="top-right" autoClose={2000} />
 

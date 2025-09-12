@@ -48,7 +48,7 @@ const Home = () => {
   };
 
   return (
-    <div className="mt-48 bg-base-100 flex items-center justify-center">
+    <div className="mt-24 bg-base-100 flex items-center justify-center">
       <div className="relative w-80 h-96">
         {feed?.map((user, index) => (
           <div
