@@ -9,11 +9,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Connections from "./components/Connections";
 import PendingConnection from "./components/PendingConnection";
+import Chat from "./components/Chat";
 
 const App = () => {
   return (
     <>
-    
       <Navbar />
       <ToastContainer position="top-right" autoClose={2000} />
 
@@ -48,6 +48,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <PendingConnection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={`/chat/:toUserId`}
+          element={
+            <ProtectedRoute>
+              <Chat />
             </ProtectedRoute>
           }
         />

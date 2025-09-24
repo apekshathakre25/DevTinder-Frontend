@@ -1,12 +1,14 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addConnection } from "../store/connectionSlice";
 
 const Connections = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const connection = useSelector((store) => store.connection);
 
   const getAllMyConnection = async () => {
@@ -36,16 +38,20 @@ const Connections = () => {
       </h2>
       <div className="space-y-4">
         {connection?.map((person) => (
-          <div key={person._id} className="card bg-base-100 max-w-md mx-auto shadow-lg border border-gray-700">
+          <div
+            key={person._id}
+            className="card bg-base-100 max-w-md mx-auto shadow-lg border border-gray-700"
+          >
             <div className="card-body">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0">
-                  <img 
-                    src={person.photoUrl} 
+                  <img
+                    src={person.photoUrl}
                     alt={`${person.firstName} ${person.lastName}`}
                     className="rounded-lg w-20 h-20 object-cover"
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/80/cccccc/666666?text=No+Image';
+                      e.target.src =
+                        "https://via.placeholder.com/80/cccccc/666666?text=No+Image";
                     }}
                   />
                 </div>
@@ -57,12 +63,18 @@ const Connections = () => {
                     {person.about?.slice(0, 100)}
                   </h3>
                   <div className="flex flex-wrap gap-2 mt-4">
-                    <div className="badge badge-outline">
-                      Age: {person.age}
-                    </div>
-                    <div className="badge badge-secondary">
-                      {person.gender}
-                    </div>
+                    <div className="badge badge-outline">Age: {person.age}</div>
+                    <div className="badge badge-secondary">{person.gender}</div>
+                  </div>
+
+                  {/* Chat button */}
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={() => navigate(`/chat/${person._id}`)}
+                      className="btn btn-primary btn-sm rounded-xl shadow-md hover:scale-105 transition"
+                    >
+                      💬 Chat
+                    </button>
                   </div>
                 </div>
               </div>
@@ -70,6 +82,7 @@ const Connections = () => {
           </div>
         ))}
       </div>
+
       {(!connection || connection.length === 0) && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🔗</div>
