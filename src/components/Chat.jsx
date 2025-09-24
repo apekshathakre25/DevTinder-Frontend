@@ -186,7 +186,8 @@ const Chat = () => {
       seen: false,
     };
 
-    setMessages((prev) => [...prev, newMsg]);
+    // Do not optimistically append here to avoid duplicate rendering.
+    // The message will be appended once when the server emits "messageReceived".
     socketRef.current?.emit("sendMessage", newMsg);
 
     // Stop typing indicator
