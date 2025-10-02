@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../store/userSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL } from "../utils/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,6 +9,23 @@ const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+
+  const isActiveLink = (path) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
+ 
+  const getLinkClasses = (path) => {
+    const baseClasses = "px-4 py-2 rounded-xl font-medium transition-all duration-200";
+    const activeClasses = "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg";
+    const inactiveClasses = "text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-800 hover:text-purple-600 dark:hover:text-purple-400";
+    
+    return `${baseClasses} ${isActiveLink(path) ? activeClasses : inactiveClasses}`;
+  };
 
   const handleLogout = async () => {
     try {
@@ -41,8 +58,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="flex items-center space-x-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-200"
             >
               <span className="text-3xl">💝</span>
@@ -50,31 +67,67 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {user && (
-            <div className="flex items-center space-x-4">
-              {/* Navigation Links */}
+          {/* Navigation Links for all users */}
+          <div className="flex items-center space-x-4">
+            {!user && (
               <div className="hidden md:flex items-center space-x-1">
                 <Link
                   to="/"
-                  className="px-4 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-800 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 font-medium"
+                  className={getLinkClasses("/")}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/about"
+                  className={getLinkClasses("/about")}
+                >
+                  About
+                </Link>
+                <Link
+                  to="/contact"
+                  className={getLinkClasses("/contact")}
+                >
+                  Contact
+                </Link>
+              </div>
+            )}
+
+            {user && (
+              <div className="hidden md:flex items-center space-x-1">
+                <Link
+                  to="/home"
+                  className={getLinkClasses("/home")}
                 >
                   Discover
                 </Link>
                 <Link
                   to="/connections"
-                  className="px-4 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-800 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 font-medium"
+                  className={getLinkClasses("/connections")}
                 >
                   Connections
                 </Link>
                 <Link
                   to="/pending-connections"
-                  className="px-4 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-800 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 font-medium"
+                  className={getLinkClasses("/pending-connections")}
                 >
                   Requests
                 </Link>
               </div>
+            )}
 
-              {/* User Menu */}
+            {!user && (
+              <div className="flex items-center space-x-3">
+                <Link
+                  to="/login"
+                  className="px-6 py-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors duration-200"
+                >
+                  Login
+                </Link>
+
+              </div>
+            )}
+
+            {user && (
               <div className="relative">
                 <div className="dropdown dropdown-end">
                   <div className="flex items-center space-x-3">
@@ -100,7 +153,7 @@ const Navbar = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-purple-600/20 to-transparent"></div>
                     </div>
                   </div>
-                  
+
                   <ul
                     tabIndex={0}
                     className="menu menu-sm dropdown-content bg-white dark:bg-gray-800 rounded-2xl z-50 mt-3 w-64 p-3 shadow-xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-md"
@@ -123,8 +176,8 @@ const Navbar = () => {
                       </div>
                     </li>
                     <li>
-                      <Link 
-                        to="/profile" 
+                      <Link
+                        to="/profile"
                         className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors duration-200"
                       >
                         <span className="text-lg">👤</span>
@@ -132,25 +185,33 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li className="md:hidden">
-                      <Link 
+                      <Link
                         to="/connections"
-                        className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                        className={`flex items-center space-x-3 p-3 rounded-xl transition-colors duration-200 ${
+                          isActiveLink("/connections") 
+                            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" 
+                            : "hover:bg-purple-50 dark:hover:bg-gray-700"
+                        }`}
                       >
                         <span className="text-lg">👥</span>
                         <span>Connections</span>
                       </Link>
                     </li>
                     <li className="md:hidden">
-                      <Link 
+                      <Link
                         to="/pending-connections"
-                        className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                        className={`flex items-center space-x-3 p-3 rounded-xl transition-colors duration-200 ${
+                          isActiveLink("/pending-connections") 
+                            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" 
+                            : "hover:bg-purple-50 dark:hover:bg-gray-700"
+                        }`}
                       >
                         <span className="text-lg">⏳</span>
                         <span>Pending Requests</span>
                       </Link>
                     </li>
                     <li>
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className="flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors duration-200 w-full"
                       >
@@ -161,8 +222,8 @@ const Navbar = () => {
                   </ul>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </nav>
