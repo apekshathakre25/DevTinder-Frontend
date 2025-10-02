@@ -12,11 +12,14 @@ const Login = () => {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const endpoint = isLoginOpen ? "login" : "signup";
       const payload = isLoginOpen
@@ -41,6 +44,8 @@ const Login = () => {
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,22 +119,42 @@ const Login = () => {
                 <span className="text-gray-400 text-lg">🔒</span>
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+              >
+                <span className="text-lg">
+                  {showPassword ? "🙈" : "👁️"}
+                </span>
+              </button>
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-6 py-3 bg-gradient-to-r cursor-pointer from-purple-500 to-pink-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+            disabled={isLoading}
+            className={`w-full mt-6 py-3 bg-gradient-to-r font-semibold rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 ${
+              isLoading
+                ? "from-gray-400 to-gray-500 cursor-not-allowed opacity-70"
+                : "from-purple-500 to-pink-500 cursor-pointer hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
+            } text-white`}
           >
-            {isLoginOpen ? "Sign In" : "Create Account"}
+            {isLoading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>{isLoginOpen ? "Signing In..." : "Creating Account..."}</span>
+              </div>
+            ) : (
+              isLoginOpen ? "Sign In" : "Create Account"
+            )}
           </button>
 
           {/* Toggle Form */}
